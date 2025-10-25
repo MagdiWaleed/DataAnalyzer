@@ -69,7 +69,7 @@ else:
     lastStages, names, _ = SalesPerson.getTotalLastStage(data)
 
 
-st.write("Get total Number of Companies: ",len(SalesPerson.getTotalCompanies(data)), " Across All Stages: ",len(companies['result']))
+st.write("Get total Number of Companies: ",len(SalesPerson.getTotalCompanies(data)), " Across Stages: ",len(companies['result']))
 
 df = pd.DataFrame({
     'Salesperson': names,
