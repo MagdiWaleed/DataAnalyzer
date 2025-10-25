@@ -61,7 +61,6 @@ for name,salesData in result['details'].items():
                             st.write(company['name'], " --> ",company['stage'])
 
 
-
 st.divider()
 
 if checkbox:
@@ -76,6 +75,7 @@ df = pd.DataFrame({
     'Salesperson': names,
     'Last Stage': lastStages
 })
+
 # Create DataFrame
 temp = pd.DataFrame(list(result['result'].items()), columns=['Stage', 'Count'])
 

@@ -35,10 +35,13 @@ class StagesModel():
     
     def stageToStage(self,column1,column2):
        result = []
+       companies_name = []
        for company in self.companies:
+           name = company.name
            company = company.toMap()
            result.append(Company.working_days(company[column1],company[column2]))
-       return result
+           companies_name.append(name)
+       return result, companies_name
     
     def getLastStage(self):
         result = []
