@@ -22,6 +22,7 @@ class LoadingPipeLine():
         names = [t.split('reports')[0].strip() for t in self.FILES_NAMES]
         return dfs, names
     
+    
 if __name__ =="__main__":
     loadingPipeLine = LoadingPipeLine()
     result = loadingPipeLine.run()

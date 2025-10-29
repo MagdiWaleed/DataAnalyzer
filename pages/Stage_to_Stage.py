@@ -9,9 +9,7 @@ import pandas as pd
 import altair as alt
 from measures.Count import CountMeasure
 
-# -----------------------------
-# Page config
-# -----------------------------
+
 st.set_page_config(
     page_title="Stage Comparison Dashboard",
     layout="wide"
@@ -20,9 +18,7 @@ st.set_page_config(
 
 st.title("📊 Stage-to-Stage Comparison")
 
-# -----------------------------
-# Run pipeline and get data
-# -----------------------------
+
 if "data" not in st.session_state.keys():
     pipeLine = PipeLine()
     data = pipeLine.run()
@@ -30,9 +26,7 @@ if "data" not in st.session_state.keys():
 
 data = st.session_state['data'] 
 
-# -----------------------------
-# Sidebar: select columns and date ranges
-# -----------------------------
+
 col1,col2,col3 = st.columns([1,1,1])
 with col1:
     st.markdown("### Stages")
@@ -58,30 +52,34 @@ with col3:
     start_date2 = st.date_input("Start Date 2", datetime.date(2025, 10, 1))
     end_date2 = st.date_input("End Date 2", datetime.date(2025, 10, 20))
 
+filter_based_on = st.selectbox("Filter Based On",["Both",stage1[0],stage2[0]])
+
 st.divider()
 # try:
 stage1 = stage1[0]
 stage2 = stage2[0]
 st.markdown(f"> 0 Means The Company Goes from {stage1.capitalize()} to {stage2.capitalize()} at the same Day")
 st.divider()
-# -----------------------------
-# Filter data by first date range
-# -----------------------------
+
+
+
+if filter_based_on =="Both":
+    filter_by = [stage1,stage2]
+elif filter_based_on == stage1:
+    filter_by = [stage1] 
+elif filter_based_on == stage2:
+    filter_by = [stage2] 
+
 
 filter1 = DatesFilter()
-filtered_data1 = filter1([stage1,stage2],data, datetime.datetime.combine(start_date1, datetime.time.min),
+filtered_data1 = filter1(filter_by,data, datetime.datetime.combine(start_date1, datetime.time.min),
                                     datetime.datetime.combine(end_date1, datetime.time.max))
 
-# -----------------------------
-# Filter data by second date range
-# -----------------------------
 filter2 = DatesFilter()
-filtered_data2 = filter2([stage1,stage2],data, datetime.datetime.combine(start_date2, datetime.time.min),
+filtered_data2 = filter2(filter_by,data, datetime.datetime.combine(start_date2, datetime.time.min),
                                     datetime.datetime.combine(end_date2, datetime.time.max))
 
-# -----------------------------
-# Apply BetweenMeasure
-# -----------------------------
+
 measure = BetweenMeasure()
 
 st.subheader("Date Range 1")
@@ -121,6 +119,9 @@ for (key_date1,value_date1),(key_date2,value_date2) in zip(result1['details'].it
                 st.divider()
                 for company in companies:
                     st.write(company['name'],company['days'])
+                    st.markdown(f"> from {company['waiting_details'][stage1].date()} to {company['waiting_details'][stage2].date()}")
+                    st.divider()
+
     with cols[1]:
         st.markdown("Date 2")
         average2, max_value2, min_value2, numberOfCommpanies2 = showSalesPersonData(result2,key_date2,value_date2)
@@ -132,6 +133,8 @@ for (key_date1,value_date1),(key_date2,value_date2) in zip(result1['details'].it
                 st.divider()
                 for company in companies:
                     st.write(company['name'],company['days'])
+                    st.markdown(f"> from {company['waiting_details'][stage1].date()} to {company['waiting_details'][stage2].date()}")
+                    st.divider()
 
     st.divider()
     st.subheader(key_date1.capitalize())
@@ -164,7 +167,10 @@ with cols[0]:
             st.divider()
             for company in companies:
                 st.write(company['name'],company['days'])
-    
+                st.markdown(f"> from {company['waiting_details'][stage1].date()} to {company['waiting_details'][stage2].date()}")
+                st.divider()
+                
+
 with cols[1]:
     st.write("Number of Companies: ",len(result2["result"]['companies'])," With in this range")
     if len(result2["result"]['companies']) >0:
@@ -179,6 +185,8 @@ with cols[1]:
             st.divider()
             for company in companies:
                 st.write(company['name'],company['days'])
+                st.markdown(f"> from {company['waiting_details'][stage1].date()} to {company['waiting_details'][stage2].date()}")
+                st.divider()
     
 
 st.divider()

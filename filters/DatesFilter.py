@@ -8,6 +8,8 @@ class DatesFilter(Filiter):
         pass
     
     def filterThis(self, date, starting_date, ending_date):
+        if date is None:
+            return False
         if not (date and starting_date and ending_date):
             return False 
         if isinstance(date, str):
@@ -34,7 +36,7 @@ class DatesFilter(Filiter):
             new_sales_persons.append(new_sales_person)
         return new_sales_persons
     
-    def __call__(self,columns, salesPersons,starting_date,ending_date):
+    def __call__(self,columns, salesPersons,starting_date,ending_date) ->list[SalesPerson]:
         salesPersons = salesPersons
         
         for stage in columns:

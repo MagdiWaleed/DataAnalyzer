@@ -24,12 +24,14 @@ class BetweenMeasure(Measure):
         
         total_companies_name = []
         total = []
+        total_stages_data = []
         for salesPerson in salesPersons:
-            days_list, companies_name= salesPerson.stagesModel.stageToStage(stage1,stage2)
+            days_list, companies_name, stages_data= salesPerson.stagesModel.stageToStage(stage1,stage2)
             total.extend(days_list)
             total_companies_name.extend(companies_name)
+            total_stages_data.extend(stages_data)
             result['details'][salesPerson.name]['average'] = np.average(days_list) if len(days_list) >0 else 0
-            companies =  [{"name":companies_name[t], "days":days_list[t]} for t in range(len(days_list))]
+            companies =  [{"name":companies_name[t], "days":days_list[t], "waiting_details":stages_data[t]} for t in range(len(days_list))]
             companies = np.array(companies)
             indcies = np.argsort(days_list)[::-1]
             companies = companies[indcies]
@@ -38,7 +40,7 @@ class BetweenMeasure(Measure):
             result['details'][salesPerson.name]['companies'] = companies
             
         indcies = np.argsort(total)[::-1]
-        companies = np.array([{"name":total_companies_name[t],"days":total[t]} for t in range(len(total_companies_name))])
+        companies = np.array([{"name":total_companies_name[t],"days":total[t],"waiting_details":total_stages_data[t]} for t in range(len(total_companies_name))])
         companies =companies[indcies]
         companies =companies.tolist()
 

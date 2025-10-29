@@ -4,7 +4,13 @@ from models.Company import Company
 from models.SalesPerson import SalesPerson
 from models.StagesModel import StagesModel
 import datetime
-
+from models.TotalModel import (
+    TotalModel,
+    SuccessfulCallsModel,
+    MeetingModel,
+    CallsModel,
+    TotalSalesPerson
+    )
 
 class PreProcessingPipeLine():
     def __init__(self,columnsNames = [
@@ -67,5 +73,68 @@ class PreProcessingPipeLine():
         data = self.selectColumns(data)
         salesData = self.convertToObjectsTableStages(data,names)
         return salesData
-        
     
+        
+class PreProcessingTotalsPipeLine():# total calls / meetings
+    def __init__(self):
+        self.update = datetime.datetime(2025,9,7)
+    def extractTables(self,data):
+        stages = []
+        meetingTable = []
+        callsTable = []
+        for sheets in data:
+            stage = sheets[0][["company name","Meeting",'We called']]
+            # sheets[2] = sheets[2][['Company Name','Meeting Date','Number of Calles', "calls Date"]]
+            # print(sheets[2])
+            meetingTable.append(sheets[2][['Company Name','Meeting Date']])
+            callsTable.append( sheets[2][['Number of Calles', "Calls Date"]])
+            stages.append(stage)
+        return stages,meetingTable,callsTable
+    
+    def isValid(self,meeting:MeetingModel, data:list[MeetingModel],index:int)-> bool:
+        for tt in range(index+1,len(data)):
+            if meeting.name == data[tt].name:
+                return False
+        return True
+    
+    def run(self,data,names):
+        stages,meetingTable,callsTable = self.extractTables(data)
+        new_data = []
+        
+        for t in range(len(stages)):
+            meetings = []
+            successfulCalls = []
+            total_calls = []
+            for tt in stages[t].iloc:
+                if isinstance(tt['Meeting'],str):
+                    tt['Meeting'] = self.update
+                elif not  pd.isna(tt['Meeting']):           
+                    meetings.append(MeetingModel(tt['company name'],tt['Meeting']))
+            
+            for tt in stages[t].iloc:
+                if isinstance(tt['We called'],str):
+                    tt['We called'] = self.update
+                elif not  pd.isna(tt['We called']):
+                    successfulCalls.append(SuccessfulCallsModel(tt['company name'],tt['We called']))
+        
+            for  tt in meetingTable[t].iloc:
+                if isinstance(tt['Meeting Date'],str):
+                    tt['Meeting Date'] = self.update
+                elif not  pd.isna(tt['Meeting Date']):
+                    meetings.append(MeetingModel(tt['Company Name'],tt['Meeting Date']))
+         
+            for  tt in callsTable[t].iloc:
+                if isinstance(tt['Calls Date'],str):
+                    tt['Calls Date'] = self.update
+                elif not  pd.isna(tt['Calls Date']):
+                    total_calls.append(CallsModel(tt['Number of Calles'],tt['Calls Date']))
+         
+            totalModel =TotalModel(meetingModels= [t for i,t in enumerate(meetings) if self.isValid(t,meetings,i)],callsModel=list(set(total_calls)),successfulCalls=list(set(successfulCalls)))
+            totalSalesPerson = TotalSalesPerson(name=names[t],totalModel=totalModel)
+            new_data.append(totalSalesPerson)
+        return new_data
+
+    
+    
+        
+
