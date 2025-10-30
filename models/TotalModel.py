@@ -73,9 +73,43 @@ class TotalSalesPerson():
         return dataMap
 
     @staticmethod
+    def getTotalSuccessfullCalls(totalSalesPerson:list):
+        dataMap = {
+            "total":[],
+            "details":{}
+        }
+        dataMap['details'] = {t.name:[] for t in totalSalesPerson}
+        
+        for data in totalSalesPerson:
+            temp = []
+            for meetingModel in data.totalModel.successfullCalls:
+                temp.append({"name": meetingModel.name, "date":meetingModel.date.date()})
+            dataMap['total'].extend(temp)
+            dataMap['details'][data.name] =  temp
+        return dataMap
+    
+    @staticmethod
+    def getTotalCalls(totalSalesPerson:list):
+        dataMap = {
+            "total":[],
+            "details":{}
+        }
+        dataMap['details'] = {t.name:[] for t in totalSalesPerson}
+        
+        for data in totalSalesPerson:
+            temp = []
+            for callsModel in data.totalModel.callsModel:
+                temp.append({"amount": callsModel.amount, "date":callsModel.date.date()})
+            dataMap['total'].extend(temp)
+            dataMap['details'][data.name] =  temp
+        return dataMap
+
+    @staticmethod
     def filter_by(totalSalesPerson:list,starting_date,ending_date):
+        new_totalSalesPerson = []
         for t in range(len(totalSalesPerson)):
-            totalSalesPerson[t].totalModel = totalSalesPerson[t].totalModel.filter_by(starting_date, ending_date)
-        return totalSalesPerson
+            totalModel = totalSalesPerson[t].totalModel.filter_by(starting_date, ending_date)
+            new_totalSalesPerson.append(TotalSalesPerson(name= totalSalesPerson[t].name,totalModel=totalModel))
+        return new_totalSalesPerson
 
         

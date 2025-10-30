@@ -5,6 +5,7 @@ import altair as alt
 import streamlit as st
 from models.SalesPerson import SalesPerson
 import datetime
+from datetime import timedelta
 from filters.DatesFilter import DatesFilter
 from measures.Count import CountMeasure
 
@@ -24,8 +25,8 @@ checkbox = st.checkbox("Show All Stages For The Company")
 switch = st.checkbox("Enable Filtering")
 
 st.markdown("### Filter Range")
-start_date = st.date_input("Start Date", datetime.date(2025, 9, 1),disabled=not switch)
-end_date = st.date_input("End Date", datetime.date(2025, 9, 30),disabled=not switch)
+start_date = st.date_input("Start Date", ((datetime.datetime.now() - timedelta(days=7)).date()),disabled=not switch)
+end_date = st.date_input("End Date", datetime.datetime.now(),disabled=not switch)
 
 if switch:
     stages = st.multiselect(

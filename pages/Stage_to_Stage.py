@@ -8,6 +8,7 @@ from models.SalesPerson import SalesPerson
 import pandas as pd
 import altair as alt
 from measures.Count import CountMeasure
+from datetime import timedelta
 
 
 st.set_page_config(
@@ -44,13 +45,13 @@ with col1:
     )
 with col2:
     st.markdown("### Date Range 1")
-    start_date1 = st.date_input("Start Date 1", datetime.date(2025, 9, 1))
-    end_date1 = st.date_input("End Date 1", datetime.date(2025, 9, 30))
+    start_date1 = st.date_input("Start Date 1", datetime.datetime.now().date() - timedelta(days=7+4))
+    end_date1 = st.date_input("End Date 1", datetime.datetime.now().date()- timedelta(days=7))
 
 with col3:
     st.markdown("### Date Range 2")
-    start_date2 = st.date_input("Start Date 2", datetime.date(2025, 10, 1))
-    end_date2 = st.date_input("End Date 2", datetime.date(2025, 10, 20))
+    start_date2 = st.date_input("Start Date 2", datetime.datetime.now().date() - timedelta(days=4))
+    end_date2 = st.date_input("End Date 2", datetime.datetime.now().date() )
 
 filter_based_on = st.selectbox("Filter Based On",["Both",stage1[0],stage2[0]])
 
