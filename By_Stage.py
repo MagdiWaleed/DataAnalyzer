@@ -8,6 +8,7 @@ import datetime
 from datetime import timedelta
 from filters.DatesFilter import DatesFilter
 from measures.Count import CountMeasure
+# from utils.ShortCuts import DateShortCut
 
 filter = DatesFilter()
 countMeasure = CountMeasure()
@@ -23,10 +24,14 @@ data = st.session_state['data']
 
 checkbox = st.checkbox("Show All Stages For The Company")
 switch = st.checkbox("Enable Filtering")
+# shortcut = st.checkbox("Show Date ShortCuts")
 
 st.markdown("### Filter Range")
 start_date = st.date_input("Start Date", ((datetime.datetime.now() - timedelta(days=7)).date()),disabled=not switch)
 end_date = st.date_input("End Date", datetime.datetime.now(),disabled=not switch)
+# dateShortCut = DateShortCut()
+
+
 
 if switch:
     stages = st.multiselect(
