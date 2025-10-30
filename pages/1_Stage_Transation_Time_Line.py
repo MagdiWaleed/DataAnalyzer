@@ -9,6 +9,7 @@ import pandas as pd
 import altair as alt
 from measures.Count import CountMeasure
 from datetime import timedelta
+from utils.Searchers import Sheet2Searcher
 
 
 st.set_page_config(
@@ -22,7 +23,8 @@ st.title("📊 Stage-to-Stage Comparison")
 
 if "data" not in st.session_state.keys():
     pipeLine = PipeLine()
-    data = pipeLine.run()
+    data, sheet2 = pipeLine.run(return_sheet2=True)
+    st.session_state['searcher'] = Sheet2Searcher(sheet2)
     st.session_state['data'] = data
 
 data = st.session_state['data'] 

@@ -7,11 +7,22 @@ from PipeLines.PreProcessingPipeLine import PreProcessingTotalsPipeLine
 from PipeLines.LoadingPipeLine import LoadingPipeLine
 from models.TotalModel import TotalSalesPerson
 from datetime import timedelta
+from PipeLines import PipeLine
+from utils.Searchers import Sheet2Searcher
 
-loadingPipeLine = LoadingPipeLine()
-preprocessing = PreProcessingTotalsPipeLine()
-data,names = loadingPipeLine.run()
-data = preprocessing.run(data,names)
+
+if "meeting_data" not in st.session_state:
+    loadingPipeLine = LoadingPipeLine()
+    preprocessing = PreProcessingTotalsPipeLine()
+    data,names = loadingPipeLine.run()
+    data = preprocessing.run(data,names)
+    st.session_state['meeting_data'] = data
+    
+    pipeLine = PipeLine()
+    _,  sheet2 = pipeLine.run(return_sheet2=True)
+    st.session_state['searcher'] = Sheet2Searcher(sheet2)
+
+data = st.session_state['meeting_data']
 
 switch = st.checkbox("Enable Filtering")
 enableComparison = st.checkbox("Enable Comparison")
@@ -60,18 +71,28 @@ if enableComparison and switch:
             st.write("Number of Meetings: ",len(value1))
             st.write("Number of Successful Calls: ",len(value_calls1))
             st.write("Number of Total Calls: ",np.sum([t['amount'] for t in value_total_calls1]))
+            
+
 
             if len(value1) > 0:
                 with st.expander("Explore Meetings Companies"):
+                    placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in value1])
+                    for key,value in placeholder.items():
+                        st.write(f"{key}: ",value)
+                    st.divider()
                     for t in value1:
-                        st.write(" ",t['name'],": ",t['date'])
+                        st.write(" ",t['name'],": ",t['date'], " --> ",st.session_state['searcher'].getModel(t['name']))
             else:
                 st.markdown(">Have No Meetings")
             
             if len(value_calls1) > 0:
                 with st.expander("Explore Successful Calls"):
+                    placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in value_calls1])
+                    for key,value in placeholder.items():
+                        st.write(f"{key}: ",value)
+                    st.divider()
                     for t in value_calls1:
-                        st.write(" ",t['name'],": ",t['date'])
+                        st.write(" ",t['name'],": ",t['date'], " --> ",st.session_state['searcher'].getModel(t['name']))
             else:
                 st.markdown(">Have No Successful Calls")
           
@@ -89,14 +110,22 @@ if enableComparison and switch:
             st.write("Number of Total Calls: ",np.sum([t['amount'] for t in value_total_calls2]))
             if len(value2) > 0:
                 with st.expander("Explore Meetings Companies"):
+                    placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in value2])
+                    for key,value in placeholder.items():
+                        st.write(f"{key}: ",value)
+                    st.divider()
                     for t in value2:
-                        st.write(" ",t['name'],": ",t['date'])
+                        st.write(" ",t['name'],": ",t['date']," --> ",st.session_state['searcher'].getModel(t['name']))
             else:
                 st.markdown(">Have No Meetings")
             if len(value_calls2) > 0:
                 with st.expander("Explore Calls Companies"):
+                    placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in value_calls2])
+                    for key,value in placeholder.items():
+                        st.write(f"{key}: ",value)
+                    st.divider()
                     for t in value_calls2:
-                        st.write(" ",t['name'],": ",t['date'])
+                        st.write(" ",t['name'],": ",t['date']," --> ",st.session_state['searcher'].getModel(t['name']))
             else:
                 st.markdown(">Have No Calls")
 
@@ -118,15 +147,24 @@ if enableComparison and switch:
 
         if len(result1['total']) > 0:
             with st.expander("Explore Meetings"):
+                placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in result1['total']])
+                for key,value in placeholder.items():
+                    st.write(f"{key}: ",value)
+                st.divider()
+
                 for t in result1['total']:
-                    st.write(" ",t['name'],": ",t['date'])
+                    st.write(" ",t['name'],": ",t['date'], " --> ",st.session_state['searcher'].getModel(t['name']))
         else:
             st.markdown(">Have No Meetings")
 
         if len(result_calls1['total']) > 0:
             with st.expander("Explore Successfull Calls"):
+                placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in result_calls1['total']])
+                for key,value in placeholder.items():
+                    st.write(f"{key}: ",value)
+                st.divider()
                 for t in result_calls1['total']:
-                    st.write(" ",t['name'],": ",t['date'])
+                    st.write(" ",t['name'],": ",t['date'], " --> ", st.session_state['searcher'].getModel(t['name']))
         else:
             st.markdown(">Have No Calls")
 
@@ -146,14 +184,22 @@ if enableComparison and switch:
 
         if len(result2['total']) > 0:
             with st.expander("Explore Meetings "):
+                placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in result2['total']])
+                for key,value in placeholder.items():
+                    st.write(f"{key}: ",value)
+                st.divider()
                 for t in result2['total']:
-                    st.write(" ",t['name'],": ",t['date'])
+                    st.write(" ",t['name'],": ",t['date'], " --> ", st.session_state['searcher'].getModel(t['name']))
         else:
             st.markdown(">Have No Meetings")
         if len(result_calls2['total']) > 0:
             with st.expander("Explore Successfull Calls"):
+                placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in result_calls2['total']])
+                for key,value in placeholder.items():
+                    st.write(f"{key}: ",value)
+                st.divider()
                 for t in result_calls2['total']:
-                    st.write(" ",t['name'],": ",t['date'])
+                    st.write(" ",t['name'],": ",t['date']," --> ", st.session_state['searcher'].getModel(t['name']))
         else:
             st.markdown(">Have No Calls")
 
@@ -239,14 +285,22 @@ else:
         st.write("Number of Total Calls: ",np.sum([t['amount'] for t in value_total_calls]))
 
         if len(value) > 0:
-            with st.expander("Explore "+salesPerson.capitalize()+" companies "):
+            with st.expander("Explore Meetings "):
+                placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in value])
+                for key,value_dash in placeholder.items():
+                    st.write(f"{key}: ",value_dash)
+                st.divider()
                 for t in value:
-                    st.write(" ",t['name'],": ",t['date'])
+                    st.write(" ",t['name'],": ",t['date']," --> ", st.session_state['searcher'].getModel(t['name']))
 
         if len(value_calls) > 0:
                 with st.expander("Explore Calls Companies"):
+                    placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in value_calls])
+                    for key,value_dash in placeholder.items():
+                        st.write(f"{key}: ",value_dash)
+                    st.divider()
                     for t in value_calls:
-                        st.write(" ",t['name'],": ",t['date'])
+                        st.write(" ",t['name'],": ",t['date']," --> ", st.session_state['searcher'].getModel(t['name']))
         else:
             st.markdown(">Have No Calls")
 
@@ -264,14 +318,22 @@ else:
 
     if len(result['total']) > 0:
         with st.expander("Explore Meeting "):
+            placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in result['total']])
+            for key,value_dash in placeholder.items():
+                st.write(f"{key}: ",value_dash)
+            st.divider()
             for t in result['total']:
-                st.write(" ",t['name'],": ",t['date'])
+                st.write(" ",t['name'],": ",t['date']," --> ", st.session_state['searcher'].getModel(t['name']))
     else:
         st.markdown(">Have No Meetings")
     if len(result_calls['total']) > 0:
         with st.expander("Explore Successfull Calls "):
+            placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in result_calls['total']])
+            for key,value_dash in placeholder.items():
+                st.write(f"{key}: ",value_dash)
+            st.divider()
             for t in result_calls['total']:
-                st.write(" ",t['name'],": ",t['date'])
+                st.write(" ",t['name'],": ",t['date']," --> ", st.session_state['searcher'].getModel(t['name']))
     else:
         st.markdown(">Have No Calls")
 
