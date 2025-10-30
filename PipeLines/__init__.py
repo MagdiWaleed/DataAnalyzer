@@ -6,7 +6,9 @@ class PipeLine():
         self.loadingPipeLine = LoadingPipeLine()
         self.preProcessingPipeLine = PreProcessingPipeLine()
     
-    def run(self):
+    def run(self,return_sheet2=False):
         data,names = self.loadingPipeLine.run()
-        data = self.preProcessingPipeLine.run(data, names)
+        data,sheet2 = self.preProcessingPipeLine.run(data, names)
+        if return_sheet2:
+            return data, sheet2
         return data

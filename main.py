@@ -1,8 +1,7 @@
 # from PipeLines import PipeLine
-# from filters.DatesFilter import DatesFilter
-# from measures.Between import BetweenMeasure
-# import datetime
-# from models.SalesPerson import SalesPerson
-# from utils.ShortCuts import DateShortCut
+# from utils.Searchers import Sheet2Searcher
 
-# dateShortCut = DateShortCut()
+# pipeLine = PipeLine()
+# data, sheet2 = pipeLine.run(return_sheet2=True)
+# sheet2Searcher = Sheet2Searcher(sheet2)
+# print(sheet2Searcher.data)

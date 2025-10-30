@@ -27,14 +27,17 @@ class PreProcessingPipeLine():
         new_data = []
         for sheets in data:
             sheets[0] = sheets[0][self.columnsNames]
+            sheets[1] = sheets[1][["Company name", "Model name"]]
             new_data.append(sheets)
         return new_data
     
     
     def convertToObjectsTableStages(self, data, names):
         new_data = []
+        sheets2 = [] # Client Card info 
         for i, sheets in enumerate(data):
             temp = []
+            sheets2.append(sheets[1])
             for t in sheets[0].iloc:
                 # Convert date columns to datetime safely
                 def safe_date(val):
@@ -65,7 +68,7 @@ class PreProcessingPipeLine():
             stageModel = StagesModel(companies=temp)
             salesPerson = SalesPerson(name=names[i], stagesModel=stageModel)
             new_data.append(salesPerson)
-        return new_data
+        return new_data, sheets2
 
 
     
@@ -73,6 +76,7 @@ class PreProcessingPipeLine():
         data = self.selectColumns(data)
         salesData = self.convertToObjectsTableStages(data,names)
         return salesData
+    
     
         
 class PreProcessingTotalsPipeLine():# total calls / meetings

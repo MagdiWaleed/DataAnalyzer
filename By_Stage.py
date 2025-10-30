@@ -8,6 +8,7 @@ import datetime
 from datetime import timedelta
 from filters.DatesFilter import DatesFilter
 from measures.Count import CountMeasure
+from utils.Searchers import Sheet2Searcher
 # from utils.ShortCuts import DateShortCut
 
 filter = DatesFilter()
@@ -15,7 +16,8 @@ countMeasure = CountMeasure()
 
 if "data" not in st.session_state.keys():
     pipeLine = PipeLine()
-    data = pipeLine.run()
+    data, sheet2 = pipeLine.run(return_sheet2=True)
+    st.session_state['searcher'] = Sheet2Searcher(sheet2)
     st.session_state['data'] = data
 
 data = st.session_state['data'] 
@@ -36,7 +38,7 @@ end_date = st.date_input("End Date", datetime.datetime.now(),disabled=not switch
 if switch:
     stages = st.multiselect(
         "Select Columns/Stages to Filter Using Them",
-        options=[ 'leads','we_called', 'gathering', 'nda', 'poc', 'qualified', 'won', 'lost'],
+        options=[ 'leads','meeting','we_called', 'gathering', 'nda', 'poc', 'qualified', 'won', 'lost'],
         default=[ 'leads']
     )
     data = filter(stages,data,datetime.datetime.combine(start_date, datetime.time.min),
@@ -58,13 +60,16 @@ for name,salesData in result['details'].items():
         else:
             with st.expander(f"Search By Company or Stage"):
                 filter_by = st.text_input(f"Search About ... ({name})").lower()
-                
+                placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in companies['details'][name]])
+                for key,value in placeholder.items():
+                    st.write(f"{key}: ",value)
+                st.divider()
                 if len(companies['details'][name]) ==0:
                     st.subheader("Have No Companies")
                 else:
                     for company in companies['details'][name]:
                         if company['name'].lower().__contains__(filter_by) or company['stage'].lower().__contains__(filter_by):
-                            st.write(company['name'], " --> ",company['stage'])
+                            st.write(company['name'], " --> ",company['stage'], " --> ", st.session_state['searcher'].getModel(company['name']))
 
 
 st.divider()
@@ -106,6 +111,11 @@ chart = alt.Chart(df).mark_bar().encode(
 st.altair_chart(chart, use_container_width=True)
 with st.expander("Search By Company or Stage"):
     filter_by = st.text_input("Search About ... ").lower()
+    placeholder = st.session_state['searcher'].countFrequency([t['name'] for t in companies['result']])
+    for key,value in placeholder.items():
+        st.write(f"{key}: ",value)
+    st.divider()
+
     for company in companies['result']:
         if company['name'].lower().__contains__(filter_by) or company['stage'].lower().__contains__(filter_by):
-            st.write(company['name'], " --> ",company['stage'])
+            st.write(company['name'], " --> ",company['stage'], " --> ",st.session_state['searcher'].getModel(company['name']))
