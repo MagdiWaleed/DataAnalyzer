@@ -35,13 +35,13 @@ with col1:
     st.markdown("### Stages")
     stage1 = st.multiselect(
         "Select Columns/Stages to Compare",
-        options=[ 'leads','we_called', 'gathering', 'nda', 'poc', 'qualified', 'won', 'lost'],
+        options=[ 'leads','we_called',"client_poc", 'gathering', 'nda', 'poc', 'qualified', 'won', 'lost'],
         default=[ 'leads'],
         max_selections=1
     )
     stage2 = st.multiselect(
         "Select Columns/Stages to Compare",
-        options=[ 'leads','we_called', 'gathering', 'nda', 'poc', 'qualified', 'won', 'lost'],
+        options=[ 'leads','we_called',"client_poc", 'gathering', 'nda', 'poc', 'qualified', 'won', 'lost'],
         default=[ 'we_called'],
         max_selections=1
     )
@@ -55,7 +55,7 @@ with col3:
     start_date2 = st.date_input("Start Date 2", datetime.datetime.now().date() - timedelta(days=4))
     end_date2 = st.date_input("End Date 2", datetime.datetime.now().date() )
 
-filter_based_on = st.selectbox("Filter Based On",["Both",stage1[0],stage2[0]])
+filter_based_on = st.selectbox("Filter Based On",[stage2[0],stage1[0],"Both"])
 
 st.divider()
 # try:
@@ -225,7 +225,7 @@ st.divider()
     
 # st.write(len(filtered_data2[index].stagesModel.companies))
 # st.write(result2)
-st.divider()
+# st.divider()
 
 
 
@@ -261,8 +261,8 @@ st.divider()
 
 
 # Example: get last stages for each range
-lastStages1, names1, _ = SalesPerson.getTotalCompanyLifeStages(filtered_data1)
-lastStages2, names2, _ = SalesPerson.getTotalCompanyLifeStages(filtered_data2)
+lastStages1, names1, _ = SalesPerson.getTotalLastStage(filtered_data1)
+lastStages2, names2, _ = SalesPerson.getTotalLastStage(filtered_data2)
 countMeasure = CountMeasure()
 result1, companies1 = countMeasure.countPerStage(filtered_data1)
 result2, companies2 = countMeasure.countPerStage(filtered_data2)

@@ -38,7 +38,7 @@ end_date = st.date_input("End Date", datetime.datetime.now(),disabled=not switch
 if switch:
     stages = st.multiselect(
         "Select Columns/Stages to Filter Using Them",
-        options=[ 'leads','meeting','we_called', 'gathering', 'nda', 'poc', 'qualified', 'won', 'lost'],
+        options=[ 'leads','meeting',"client_poc",'we_called', 'gathering', 'nda', 'poc', 'qualified', 'won', 'lost'],
         default=[ 'leads']
     )
     data = filter(stages,data,datetime.datetime.combine(start_date, datetime.time.min),
