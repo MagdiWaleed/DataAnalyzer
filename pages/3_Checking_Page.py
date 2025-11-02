@@ -12,7 +12,7 @@ st.set_page_config(
     
 )
 
-st.title("📊 Stage-to-Stage Comparison")
+st.title("Checking Page")
 
 
 if "data" not in st.session_state.keys():
