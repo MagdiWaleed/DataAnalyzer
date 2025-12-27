@@ -41,8 +41,6 @@ class StagesModel():
            companyMap = company.toMap()
            if companyMap[column1] is None or companyMap[column2] is None:
                continue
-           print(company.name,'\n' ,company.leads,'\n',company.we_called,'\n')
-           print("="*50,"\n")
            name = company.name
            company = company.toMap()
            result.append(Company.working_days(company[column1],company[column2]))

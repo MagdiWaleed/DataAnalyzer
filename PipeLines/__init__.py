@@ -2,8 +2,8 @@ from .LoadingPipeLine import LoadingPipeLine
 from .PreProcessingPipeLine import PreProcessingPipeLine
 
 class PipeLine():
-    def __init__(self):
-        self.loadingPipeLine = LoadingPipeLine()
+    def __init__(self, uploaded_files=None, names=None):
+        self.loadingPipeLine = LoadingPipeLine(uploaded_files=uploaded_files, names=names)
         self.preProcessingPipeLine = PreProcessingPipeLine()
     
     def run(self,return_sheet2=False):

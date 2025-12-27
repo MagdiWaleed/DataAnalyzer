@@ -12,15 +12,8 @@ from utils.Searchers import Sheet2Searcher
 
 
 if "meeting_data" not in st.session_state:
-    loadingPipeLine = LoadingPipeLine()
-    preprocessing = PreProcessingTotalsPipeLine()
-    data,names = loadingPipeLine.run()
-    data = preprocessing.run(data,names)
-    st.session_state['meeting_data'] = data
-    
-    pipeLine = PipeLine()
-    _,  sheet2 = pipeLine.run(return_sheet2=True)
-    st.session_state['searcher'] = Sheet2Searcher(sheet2)
+    st.warning("Upload data is required. Please go to the 'Upload Files' page.")
+    st.stop()
 
 data = st.session_state['meeting_data']
 

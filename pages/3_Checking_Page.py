@@ -15,10 +15,9 @@ st.set_page_config(
 st.title("Checking Page")
 
 
-if "data" not in st.session_state.keys():
-    pipeLine = PipeLine()
-    data, sheet2 = pipeLine.run(return_sheet2=True)
-    st.session_state['data'] = data
+if "data" not in st.session_state:
+    st.warning("Upload data is required. Please go to the 'Upload Files' page.")
+    st.stop()
 
 data = st.session_state['data'] 
 

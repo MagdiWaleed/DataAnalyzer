@@ -32,16 +32,7 @@ class CountMeasure(Measure):
             "details":{k:[] for k in set(names)},
             "result":[]
         }
-        print(companies)
-        print(len(names), len(lastStages),len(companies_name))
-        print("hi"*10)
         for name, lastStage,company_name in zip(names,lastStages,companies_name):
-            # print("="*10)
-            # print(name)
-            print("="*10)
-            print(name)
-            print(lastStage)
-            print(company_name)
             if name is None or lastStage is None or company_name is None:
                 continue
         
