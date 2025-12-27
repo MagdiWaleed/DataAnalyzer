@@ -313,3 +313,11 @@ chart = alt.Chart(comparison_melted).mark_bar().encode(
 st.altair_chart(chart, use_container_width=True)
 # except Exception as e:
 #     st.subheader("Please Choose Two Stages ...")
+
+st.success("""
+### 💡 Business Insights: What this page tells you
+This **Stage Transaction** dashboard helps you analyze the **efficiency** of your sales cycle.
+- **Bottleneck Detection**: "Average Days" tells you how long it takes to move from one stage to another (e.g., Lead -> Meeting). 
+- **Comparison**: Compare two date ranges (e.g., This Month vs Last Month) to see if you are getting faster or slower.
+- **Team Efficiency**: See which salesperson moves clients fastest through the pipeline. A high "Max Waiting Days" might indicate a stalled deal that needs attention.
+""")

@@ -69,6 +69,14 @@ for name,salesData in result['details'].items():
                         if company['name'].lower().__contains__(filter_by) or company['stage'].lower().__contains__(filter_by):
                             st.write(company['name'], " --> ",company['stage'], " --> ", st.session_state['searcher'].getModel(company['name']))
 
+st.success("""
+### 💡 Business Insights: What this page tells you
+This **Overview Dashboard** gives you a snapshot of where your active prospects are right now.
+- **Stage Distribution**: See which stage has the most companies. A "fat" top (many leads) is good, but a "fat" middle (many in NDA/POC) might indicate a bottleneck.
+- **Salesperson Performance**: Compare how many companies each salesperson is managing and at what stage.
+- **Search**: Quickly find specific companies and their current status.
+""")
+
 
 st.divider()
 
